@@ -6,12 +6,9 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { TodoistApi } from '@doist/todoist-api-typescript'
 
-
-// Please supply API key
-const apiKey = "API key goes here";
+const apiKey = process.env.REACT_APP_APIKEY;
 
 const api = new TodoistApi(apiKey);
-
 
 const addTask = async (task) => {
   const { id } = await api.addTask({ content: task })
@@ -45,7 +42,7 @@ const Form = (props) => {
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 5 }}>
         <Stack spacing={2}>
           <Input
-            placeholder="task"
+            placeholder="Add Completed Task"
             fullWidth
             value={task}
             onChange={handleChange}
