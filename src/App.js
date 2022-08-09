@@ -12,14 +12,26 @@ const apiKey = "API key goes here";
 
 const api = new TodoistApi(apiKey);
 
+
+const addTask = async (task) => {
+  const { id } = await api.addTask({ content: task })
+  return id
+}
+
+const closeTask = async (taskId) => {
+  return await api.closeTask(taskId) 
+}
+
 const Form = (props) => {
   let [task, setTask] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const { id } = await api.addTask({ content: task })
-    const isClosed = await api.closeTask(id)
+    const id = await addTask(task)
+    const isClosed = await closeTask(id)
     setTask('')
-    console.log(isClosed)
+  }
+  const handleChange = (e) => {
+    setTask(e.target.value)
   }
   return (
     <Box
@@ -36,7 +48,7 @@ const Form = (props) => {
             placeholder="task"
             fullWidth
             value={task}
-            onChange={event => setTask(event.target.value)}
+            onChange={handleChange}
           />
 
           <Button type="submit" variant="contained">I done it!</Button>
