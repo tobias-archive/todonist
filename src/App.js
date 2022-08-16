@@ -23,8 +23,16 @@ const Form = (props) => {
   let [task, setTask] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const id = await addTask(task)
-    const isClosed = await closeTask(id)
+
+    try {
+      const id = await addTask(task)
+      const isClosed = await closeTask(id)
+
+      if (!isClosed) throw "Task did not close"
+    }
+    catch(e) {
+      console.error(e)
+    }
     setTask('')
   }
   const handleChange = (e) => {
