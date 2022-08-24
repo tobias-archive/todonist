@@ -11,12 +11,11 @@ const apiKey = process.env.REACT_APP_APIKEY;
 const api = new TodoistApi(apiKey);
 
 const addTask = async (task) => {
-  const { id } = await api.addTask({ content: task })
-  return id
+  return await api.addTask({ content: task })
 }
 
 const closeTask = async (taskId) => {
-  return await api.closeTask(taskId) 
+  return await api.closeTask(taskId)
 }
 
 const Form = (props) => {
@@ -25,12 +24,13 @@ const Form = (props) => {
     e.preventDefault()
 
     try {
-      const id = await addTask(task)
+      const { id, content } = await addTask(task)
       const isClosed = await closeTask(id)
+      props.getItem(id, content)
 
       if (!isClosed) throw "Task did not close"
     }
-    catch(e) {
+    catch (e) {
       console.error(e)
     }
     setTask('')
@@ -64,10 +64,30 @@ const Form = (props) => {
 }
 
 
+const DoneList = (props) => {
+  console.log(props)
+  return (
+    <>
+      <h3>Completed task</h3>
+      <ul>
+      {props.listItem.map((item) => (
+        <li key={item.id}>{item.newItem}</li>
+      ))}
+      </ul>
+    </>
+  )
+}
+
 function App() {
+  let [item, setItem] = useState([]);
+
+  const getItem = (id, newItem) => {
+    setItem([...item, {newItem, id}])
+  }
   return (
     <div>
-      <Form />
+      <Form getItem={getItem} />
+      <DoneList listItem={item} />
     </div>
   );
 }
